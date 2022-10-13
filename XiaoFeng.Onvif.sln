@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XiaoFeng.Onvif", "XiaoFeng.Onvif.csproj", "{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnvifTest", "..\OnvifTest\OnvifTest.csproj", "{0F1010CC-8FAE-47D2-80A9-2CC268C4EAD4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F1010CC-8FAE-47D2-80A9-2CC268C4EAD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F1010CC-8FAE-47D2-80A9-2CC268C4EAD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F1010CC-8FAE-47D2-80A9-2CC268C4EAD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F1010CC-8FAE-47D2-80A9-2CC268C4EAD4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4EA61375-1D3A-42ED-B151-8558E44E938E}
+	EndGlobalSection
+EndGlobal
