@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using XiaoFeng.Xml;
 
 namespace XiaoFeng.Onvif
@@ -8,6 +9,7 @@ namespace XiaoFeng.Onvif
     /// </summary>
     public class DeviceService
     {
+        public static readonly string URL = "onvif/device_service";
         /// <summary>
         /// 获取服务器时间
         /// </summary>
@@ -15,20 +17,13 @@ namespace XiaoFeng.Onvif
         {
             var onvifUTCDateTime = DateTime.Now;
             string reqMessageStr = "<tds:GetSystemDateAndTime/>";
-            var result = await Http.HttpHelper.GetHtmlAsync(new Http.HttpRequest
-            {
-                Method = HttpMethod.Post.ToString(),
-                ContentType = "application/xml",
-                Address = $"http://{ip}/onvif/device_service",
-                BodyData = $"{OnvifAuth.EnvelopeHeader()}{OnvifAuth.EnvelopeBody(reqMessageStr)}{OnvifAuth.EnvelopeFooter()}"
-            });
+            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, "user", "pass", onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                try
-                {
                     var xnode_list = result.Html.XmlToEntity<XmlValue>();
                     //不同设备 获取时间的节点也不一样
-                    if (   xnode_list.ChildNodes != null
+                    #region 获取设备时间
+                    if (xnode_list.ChildNodes != null
                         && xnode_list.ChildNodes[0].ChildNodes != null
                         && xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes != null
                         && xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes[0].ChildNodes != null)
@@ -68,11 +63,7 @@ namespace XiaoFeng.Onvif
 
                         onvifUTCDateTime = new DateTime(_year, _month, _day, _hour, _min, _sec);
                     }
-                }
-                catch (Exception ex)
-                {
-
-                }
+                    #endregion
             }
             else
             {
@@ -90,13 +81,7 @@ namespace XiaoFeng.Onvif
                                       <tds:GetCapabilities> 
                                            <tds:Category>All</tds:Category> 
                                       </tds:GetCapabilities> ";
-            var result = await Http.HttpHelper.GetHtmlAsync(new Http.HttpRequest
-            {
-                Method = HttpMethod.Post.ToString(),
-                ContentType = "application/xml",
-                Address = $"http://{ip}/onvif/device_service",
-                BodyData = $"{OnvifAuth.EnvelopeHeader()}{OnvifAuth.EnvelopeBody(reqMessageStr)}{OnvifAuth.EnvelopeFooter()}"
-            });
+            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, "user", "pass", DateTime.Now);
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 try

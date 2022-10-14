@@ -1,15 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+using XiaoFeng.Xml;
 
 namespace XiaoFeng.Onvif
 {
     public class OnvifAuth
     {
+        /// <summary>
+        /// 远程调用
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="url"></param>
+        /// <param name="reqMessageStr"></param>
+        /// <param name="user"></param>
+        /// <param name="pass"></param>
+        /// <param name="onvifUTCDateTime"></param>
+        /// <returns></returns>
+        public static async Task<Http.HttpResponse> RemoteClient(string ip, string url, string reqMessageStr,
+            string user, string pass, DateTime onvifUTCDateTime)
+        {
+            var headToken = GetHeadToken(user, pass, onvifUTCDateTime);
+            return await Http.HttpHelper.GetHtmlAsync(new Http.HttpRequest
+            {
+                Method = HttpMethod.Post.ToString(),
+                ContentType = "application/xml",
+                Address = $"http://{ip}/{url}",
+                BodyData = $"{EnvelopeHeader()}{headToken}{EnvelopeBody(reqMessageStr)}{EnvelopeFooter()}"
+            });
+        }
+
         /// <summary>
         /// 获取加密的字节数组
         /// </summary>
@@ -32,16 +51,6 @@ namespace XiaoFeng.Onvif
         }
 
         /// <summary>
-        /// 计算指定字节数组的哈希值。
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static byte[] SHAOneHash(byte[] data)
-        {
-            return HashAlgorithm.Create("SHA1").ComputeHash(data);
-        }
-
-        /// <summary>
         /// 获取加密后的字符串
         /// </summary>
         /// <param name="nonce"></param>
@@ -51,18 +60,8 @@ namespace XiaoFeng.Onvif
         public static string GetPasswordDigest(string nonce, string createdString, string password)
         {
             byte[] combined = buildBytes(nonce, createdString, password);
-            string output = System.Convert.ToBase64String(SHAOneHash(combined));
+            string output = Convert.ToBase64String(HashAlgorithm.Create("SHA1").ComputeHash(combined));
             return output;
-        }
-
-        /// <summary>
-        /// 加密的时间戳
-        /// </summary>
-        /// <param name="onvifUTCDateTime">从onvif获取的世间</param>
-        /// <returns></returns>
-        public static string GetCreated(DateTime onvifUTCDateTime)
-        {
-            return onvifUTCDateTime.ToString("yyyy-MM-ddThh:mm:ssZ");
         }
 
         /// <summary>
@@ -87,7 +86,7 @@ namespace XiaoFeng.Onvif
         public static string GetHeadToken(string username, string password, DateTime onvifUTCDateTime)
         {
             string nonce = GetNonce();
-            string created = GetCreated(onvifUTCDateTime);
+            string created = onvifUTCDateTime.ToString("yyyy-MM-ddThh:mm:ssZ");
             string pass = GetPasswordDigest(nonce, created, password);
             //设置发送消息体
             return $@"
@@ -130,7 +129,7 @@ namespace XiaoFeng.Onvif
         public static string EnvelopeFooter()
         {
             return @"
-                     </s:Envelope> "; 
+                     </s:Envelope> ";
         }
     }
 

@@ -8,6 +8,7 @@ namespace XiaoFeng.Onvif
     /// </summary>
     public class MediaService
     {
+        public static readonly string URL = "onvif/media_service";
         /// <summary>
         /// 获取设备配置信息
         /// </summary>
@@ -17,18 +18,11 @@ namespace XiaoFeng.Onvif
         /// <returns></returns>
         public static async Task<List<string>> GetProfiles(string ip, string user, string pass, DateTime onvifUTCDateTime)
         {
-            var headToken = OnvifAuth.GetHeadToken(user, pass, onvifUTCDateTime);
             string reqMessageStr = @"
                                      <GetProfiles xmlns=""http://www.onvif.org/ver20/media/wsdl"">
                                          <Type>All</Type>
                                      </GetProfiles>";
-            var result = await Http.HttpHelper.GetHtmlAsync(new Http.HttpRequest
-            {
-                Method = HttpMethod.Post.ToString(),
-                ContentType = "application/xml",
-                Address = $"http://{ip}/onvif/media_service",
-                BodyData = $"{OnvifAuth.EnvelopeHeader()}{headToken}{OnvifAuth.EnvelopeBody(reqMessageStr)}{OnvifAuth.EnvelopeFooter()}"
-            });
+            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
@@ -64,8 +58,6 @@ namespace XiaoFeng.Onvif
         /// <returns>视频流地址</returns>
         public static async Task<string> GetStreamUri(string ip, string user, string pass, DateTime onvifUTCDateTime, string token)
         {
-            var headToken = OnvifAuth.GetHeadToken(user, pass, onvifUTCDateTime);
-            //设置发送消息体
             string reqMessageStr = $@"
                                         <GetStreamUri xmlns=""http://www.onvif.org/ver10/media/wsdl"">
                                           <StreamSetup>
@@ -76,13 +68,7 @@ namespace XiaoFeng.Onvif
                                           </StreamSetup>
                                           <ProfileToken>{token}</ProfileToken>
                                        </GetStreamUri>";
-            var result = await Http.HttpHelper.GetHtmlAsync(new Http.HttpRequest
-            {
-                Method = HttpMethod.Post.ToString(),
-                ContentType = "application/xml",
-                Address = $"http://{ip}/onvif/media_service",
-                BodyData = $"{OnvifAuth.EnvelopeHeader()}{headToken}{OnvifAuth.EnvelopeBody(reqMessageStr)}{OnvifAuth.EnvelopeFooter()}"
-            });
+            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
@@ -107,19 +93,11 @@ namespace XiaoFeng.Onvif
         /// <returns>视频快照地址</returns>
         public static async Task<string> GetSnapshotUri(string ip, string user, string pass, DateTime onvifUTCDateTime, string token)
         {
-            var headToken = OnvifAuth.GetHeadToken(user, pass, onvifUTCDateTime);
-            //设置发送消息体
             string reqMessageStr = $@"
                                        <trt:GetSnapshotUri  xmlns:trt=""http://www.onvif.org/ver10/media/wsdl"">
                                               <trt:ProfileToken>{token}</trt:ProfileToken>
                                        </trt:GetSnapshotUri>";
-            var result = await Http.HttpHelper.GetHtmlAsync(new Http.HttpRequest
-            {
-                Method = HttpMethod.Post.ToString(),
-                ContentType = "application/xml",
-                Address = $"http://{ip}/onvif/media_service",
-                BodyData = $"{OnvifAuth.EnvelopeHeader()}{headToken}{OnvifAuth.EnvelopeBody(reqMessageStr)}{OnvifAuth.EnvelopeFooter()}"
-            });
+            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
