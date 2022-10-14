@@ -27,6 +27,7 @@ namespace XiaoFeng.Onvif
             {
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
                 if (xnode_list.ChildNodes != null
+                       && xnode_list.ChildNodes.Count > 1
                        && xnode_list.ChildNodes[1].ChildNodes != null
                        && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes != null)
                 {
@@ -43,6 +44,23 @@ namespace XiaoFeng.Onvif
                         }
                     }
                     return tokens;
+                }
+                else
+                {
+                    List<string> tokens = new List<string>();
+                    foreach (var item in xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes)
+                    {
+                        var token = item.Attributes[0].Value;
+                        var profileName = item.ChildNodes[0].Value;
+
+                        tokens.Add(token.ToCast<string>());
+                        foreach (var configurations in item.ChildNodes[1].ChildNodes)
+                        {
+
+                        }
+                    }
+                    return tokens;
+
                 }
             }
             else

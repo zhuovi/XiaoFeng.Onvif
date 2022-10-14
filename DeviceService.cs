@@ -29,7 +29,7 @@ namespace XiaoFeng.Onvif
                     && xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes != null
                     && xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes[0].ChildNodes != null)
                 {
-                    //UNIVIEW Camera
+                    //UNIVIEW、HIKVISION Camera
                     var utcDateTime = xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes[0].ChildNodes[3];
                     var time_node = utcDateTime.ChildNodes[0];
                     var date_node = utcDateTime.ChildNodes[1];
@@ -42,7 +42,7 @@ namespace XiaoFeng.Onvif
                     var _month = date_node[1].ToCast<int>();
                     var _day = date_node[2].ToCast<int>();
 
-                    onvifUTCDateTime = new DateTime(_year, _month, _day, _hour, _min, _sec);
+                    return new DateTime(_year, _month, _day, _hour, _min, _sec);
                 }
                 if (xnode_list.ChildNodes != null
                     && xnode_list.ChildNodes[1].ChildNodes != null
@@ -62,7 +62,7 @@ namespace XiaoFeng.Onvif
                     var _month = date_node[1].ToCast<int>();
                     var _day = date_node[2].ToCast<int>();
 
-                    onvifUTCDateTime = new DateTime(_year, _month, _day, _hour, _min, _sec);
+                    return new DateTime(_year, _month, _day, _hour, _min, _sec);
                 }
                 #endregion
             }
@@ -119,7 +119,11 @@ namespace XiaoFeng.Onvif
                 try
                 {
                     var xnode_list = result.Html.ReplacePattern(@"(<|/)[a-z\-]+:", "$1").XmlToEntity<XmlValue>();
-                    return xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes.ToDictionary(x => x.Name, x => x.Value).ToJson();
+                    if (xnode_list.ChildNodes.Count > 1)
+                    {
+                        return xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes.ToDictionary(x => x.Name, x => x.Value).ToJson();
+                    }
+                    return xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes.ToDictionary(x => x.Name, x => x.Value).ToJson();
                 }
                 catch (Exception ex)
                 {
