@@ -15,7 +15,7 @@ namespace XiaoFeng.Onvif
         /// <param name="user"></param>
         /// <param name="pass"></param>
         /// <returns></returns>
-        public static async Task<string> GetProfiles(string ip, string user, string pass, DateTime onvifUTCDateTime)
+        public static async Task<List<string>> GetProfiles(string ip, string user, string pass, DateTime onvifUTCDateTime)
         {
             var headToken = OnvifAuth.GetHeadToken(user, pass, onvifUTCDateTime);
             string reqMessageStr = @"
@@ -31,13 +31,31 @@ namespace XiaoFeng.Onvif
             });
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                var value = result.Html;
+                var xnode_list = result.Html.XmlToEntity<XmlValue>();
+                if (xnode_list.ChildNodes != null
+                       && xnode_list.ChildNodes[1].ChildNodes != null
+                       && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes != null)
+                {
+                    List<string> tokens = new List<string>();
+                    foreach (var item in xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes)
+                    {
+                        var token = item.Attributes[1].Value;
+                        var profileName = item.ChildNodes[0].Value;
+
+                        tokens.Add(token.ToCast<string>());
+                        foreach (var configurations in item.ChildNodes[1].ChildNodes)
+                        {
+
+                        }
+                    }
+                    return tokens;
+                }
             }
             else
             {
                 /*请求失败*/
             }
-            return "";
+            return default;
         }
         /// <summary>
         /// 获取视频流地址
@@ -67,7 +85,14 @@ namespace XiaoFeng.Onvif
             });
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                var value = result.Html;
+                var xnode_list = result.Html.XmlToEntity<XmlValue>();
+                if (xnode_list.ChildNodes != null
+                       && xnode_list.ChildNodes[1].ChildNodes != null
+                       && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes != null
+                       && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[0].ChildNodes != null)
+                {
+                    return xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[0].ChildNodes[0].Value.ToCast<string>();
+                }
             }
             else
             {
