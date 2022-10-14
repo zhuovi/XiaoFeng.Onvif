@@ -91,11 +91,16 @@ namespace XiaoFeng.Onvif
             {
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
                 if (xnode_list.ChildNodes != null
+                       && xnode_list.ChildNodes.Count > 1
                        && xnode_list.ChildNodes[1].ChildNodes != null
                        && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes != null
                        && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[0].ChildNodes != null)
                 {
                     return xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[0].ChildNodes[0].Value.ToCast<string>();
+                }
+                else 
+                {
+                    return xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes[0].ChildNodes[0].Value.ToCast<string>();
                 }
             }
             else

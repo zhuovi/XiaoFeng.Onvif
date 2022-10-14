@@ -35,5 +35,116 @@ namespace XiaoFeng.Onvif
             }
             return default;
         }
+        public static async Task<List<string>> AbsoluteMove(string ip, string user, string pass,
+            DateTime onvifUTCDateTime, string token,double x, double y)
+        {
+            string reqMessageStr = $@"
+                        <tptz:AbsoluteMove xmlns:tptz=""http://www.onvif.org/ver20/ptz/wsdl"">
+                              <tptz:ProfileToken>{token}</tptz:ProfileToken>
+                              <tptz:Position>
+                                <tt:PanTilt x=""{x}"" y=""{y}"" space=""http://www.onvif.org/ver10/tptz/PanTiltSpaces/PositionGenericSpace"" />
+                              </tptz:Position>
+                        </tptz:AbsoluteMove>";
+            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                await Stop(ip, user, pass, onvifUTCDateTime, token);
+                var xnode_list = result.Html.XmlToEntity<XmlValue>();
+            }
+            else
+            {
+                /*请求失败*/
+            }
+            return default;
+        }
+        /// <summary>
+        /// 停止移动
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="user"></param>
+        /// <param name="pass"></param>
+        /// <param name="onvifUTCDateTime"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static async Task<List<string>> Stop(string ip, string user, string pass,
+           DateTime onvifUTCDateTime, string token)
+        {
+            string reqMessageStr = $@"
+                        <tptz:Stop xmlns:tptz=""http://www.onvif.org/ver20/ptz/wsdl"">
+                                <tptz:ProfileToken>{token}</tptz:ProfileToken>
+                                <tptz:PanTilt>true</tptz:PanTilt>
+                                <tptz:Zoom>true</tptz:Zoom>
+                        </tptz:Stop>";
+            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                var xnode_list = result.Html.XmlToEntity<XmlValue>();
+            }
+            else
+            {
+                /*请求失败*/
+            }
+            return default;
+        }
+        /// <summary>
+        /// 继续移动
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="user"></param>
+        /// <param name="pass"></param>
+        /// <param name="onvifUTCDateTime"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static async Task<List<string>> ContinuousMove(string ip, string user, string pass,
+          DateTime onvifUTCDateTime, string token, double x, double y, double z)
+        {
+            string reqMessageStr = $@"
+                        <tptz:ContinuousMove xmlns:tptz=""http://www.onvif.org/ver20/ptz/wsdl"">
+                          <tptz:ProfileToken>{token}</tptz:ProfileToken>
+                          <tptz:Velocity>
+                            <tt:PanTilt x=""{x}"" y=""{y}"" />
+                            <tt:Zoom x=""{z}"" />
+                          </tptz:Velocity>
+                        </tptz:ContinuousMove>";
+            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                await Stop(ip, user, pass, onvifUTCDateTime, token);
+                var xnode_list = result.Html.XmlToEntity<XmlValue>();
+            }
+            else
+            {
+                /*请求失败*/
+            }
+            return default;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="user"></param>
+        /// <param name="pass"></param>
+        /// <param name="onvifUTCDateTime"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static async Task<List<string>> SetHomePosition(string ip, string user, string pass,
+          DateTime onvifUTCDateTime, string token)
+        {
+            string reqMessageStr = $@"
+                       <tptz:SetHomePosition xmlns:tptz=""http://www.onvif.org/ver20/ptz/wsdl"">
+                          <tptz:ProfileToken>{token}</tptz:ProfileToken>
+                        </tptz:SetHomePosition>";
+            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            if (result.StatusCode == HttpStatusCode.OK)
+            {
+                await Stop(ip, user, pass, onvifUTCDateTime, token);
+                var xnode_list = result.Html.XmlToEntity<XmlValue>();
+            }
+            else
+            {
+                /*请求失败*/
+            }
+            return default;
+        }
     }
 }
