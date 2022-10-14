@@ -187,7 +187,7 @@ namespace XiaoFeng.Onvif
             return "";
         }
         /// <summary>
-        /// 获取视频快照地址
+        /// 获取视频快照地址   
         /// </summary>
         /// <param name="token">Token</param>
         /// <returns>视频快照地址</returns>
