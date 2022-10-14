@@ -3,8 +3,8 @@ using XiaoFeng.Onvif;
 
 
 var ip = "192.168.12.2";
-var user = "admin";
-var pass = "qwer1234";
+var user = "onvif";
+var pass = "123456";
 
 var onvifUTCDateTime = await DeviceService.GetSystemDateAndTime(ip);
 var info= await DeviceService.GetDeviceInformation(ip, user, pass, onvifUTCDateTime);

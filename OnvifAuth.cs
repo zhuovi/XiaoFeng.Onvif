@@ -59,9 +59,10 @@ namespace XiaoFeng.Onvif
         /// <returns></returns>
         public static string GetPasswordDigest(string nonce, string createdString, string password)
         {
-            byte[] combined = buildBytes(nonce, createdString, password);
-            string output = Convert.ToBase64String(HashAlgorithm.Create("SHA1").ComputeHash(combined));
-            return output;
+           // byte[] combined = buildBytes(nonce, createdString, password);
+            //string output = Convert.ToBase64String(HashAlgorithm.Create("SHA1").ComputeHash(combined));
+            return new XiaoFeng.Cryptography.SHAEncryption().Encrypt(new List<byte[]> { nonce.FromBase64StringToBytes(), createdString.GetBytes(), password.GetBytes() }.SelectMany(a => a).ToArray(), Cryptography.SHAType.SHA1).ToBase64String();
+            //return output;
         }
 
         /// <summary>
