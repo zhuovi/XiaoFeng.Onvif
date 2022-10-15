@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XiaoFeng.Onvif", "XiaoFeng.Onvif.csproj", "{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XiaoFeng.Onvif", "XiaoFeng.Onvif.csproj", "{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnvifTest", "..\OnvifTest\OnvifTest.csproj", "{0F1010CC-8FAE-47D2-80A9-2CC268C4EAD4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "..\ConsoleApp1\ConsoleApp1.csproj", "{90008CD8-8156-40F7-8C0D-DDC0032F706D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0F1010CC-8FAE-47D2-80A9-2CC268C4EAD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0F1010CC-8FAE-47D2-80A9-2CC268C4EAD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0F1010CC-8FAE-47D2-80A9-2CC268C4EAD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0F1010CC-8FAE-47D2-80A9-2CC268C4EAD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90008CD8-8156-40F7-8C0D-DDC0032F706D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90008CD8-8156-40F7-8C0D-DDC0032F706D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90008CD8-8156-40F7-8C0D-DDC0032F706D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90008CD8-8156-40F7-8C0D-DDC0032F706D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,9 +4,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Title>封装Onvif常用接口</Title>
-    <Authors>cici.zhao</Authors>
-    <Description>基于.NET封装Onvif常用接口</Description>
+    <Title>封装Onvif常用接口、设备、媒体、云台等功能</Title>
+    <Authors>畅聊了个科技</Authors>
+    <Description>封装Onvif常用接口、设备、媒体、云台等功能</Description>
     <PackageProjectUrl>https://github.com/zhuovi/XiaoFeng.Onvif</PackageProjectUrl>
     <PackageIcon>onvif.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
