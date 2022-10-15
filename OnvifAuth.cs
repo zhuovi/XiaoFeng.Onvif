@@ -1,6 +1,5 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using XiaoFeng.Xml;
+﻿using System.Text;
+using System.Xml.Linq;
 
 namespace XiaoFeng.Onvif
 {
@@ -28,28 +27,6 @@ namespace XiaoFeng.Onvif
                 BodyData = $"{EnvelopeHeader()}{headToken}{EnvelopeBody(reqMessageStr)}{EnvelopeFooter()}"
             });
         }
-
-        /// <summary>
-        /// 获取加密的字节数组
-        /// </summary>
-        /// <param name="nonce"></param>
-        /// <param name="createdString"></param>
-        /// <param name="basedPassword"></param>
-        /// <returns></returns>
-        private static byte[] buildBytes(string nonce, string createdString, string basedPassword)
-        {
-            byte[] nonceBytes = System.Convert.FromBase64String(nonce);
-            byte[] time = Encoding.UTF8.GetBytes(createdString);
-            byte[] pwd = Encoding.UTF8.GetBytes(basedPassword);
-
-            byte[] operand = new byte[nonceBytes.Length + time.Length + pwd.Length];
-            Array.Copy(nonceBytes, operand, nonceBytes.Length);
-            Array.Copy(time, 0, operand, nonceBytes.Length, time.Length);
-            Array.Copy(pwd, 0, operand, nonceBytes.Length + time.Length, pwd.Length);
-
-            return operand;
-        }
-
         /// <summary>
         /// 获取加密后的字符串
         /// </summary>
@@ -59,10 +36,12 @@ namespace XiaoFeng.Onvif
         /// <returns></returns>
         public static string GetPasswordDigest(string nonce, string createdString, string password)
         {
-           // byte[] combined = buildBytes(nonce, createdString, password);
-            //string output = Convert.ToBase64String(HashAlgorithm.Create("SHA1").ComputeHash(combined));
-            return new XiaoFeng.Cryptography.SHAEncryption().Encrypt(new List<byte[]> { nonce.FromBase64StringToBytes(), createdString.GetBytes(), password.GetBytes() }.SelectMany(a => a).ToArray(), Cryptography.SHAType.SHA1).ToBase64String();
-            //return output;
+            return new Cryptography.SHAEncryption()
+                .Encrypt(new List<byte[]> {
+                    nonce.FromBase64StringToBytes(),
+                    createdString.GetBytes(),
+                    password.GetBytes() }
+                .SelectMany(a => a).ToArray(), Cryptography.SHAType.SHA1).ToBase64String();
         }
 
         /// <summary>
@@ -131,6 +110,15 @@ namespace XiaoFeng.Onvif
         {
             return @"
                      </s:Envelope> ";
+        }
+        /// <summary>
+        /// 统一错误响应
+        /// </summary>
+        /// <param name="xnode"></param>
+        /// <returns></returns>
+        public static object? ErrorResponse(string xnode)
+        {
+            return XElement.Parse(xnode).Descendants("Reason").Select(x => x.Element("Text").Value).Cast<string>().FirstOrDefault();
         }
     }
 

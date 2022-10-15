@@ -1,7 +1,6 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
+using System.Xml.Linq;
 using XiaoFeng.Xml;
-using static XiaoFeng.Data.DataConfig;
 
 namespace XiaoFeng.Onvif
 {
@@ -21,54 +20,19 @@ namespace XiaoFeng.Onvif
             var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, "user", "pass", onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                var xnode_list = result.Html.XmlToEntity<XmlValue>();
-                //不同设备 获取时间的节点也不一样
-                #region 获取设备时间
-                if (xnode_list.ChildNodes != null
-                    && xnode_list.ChildNodes[0].ChildNodes != null
-                    && xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes != null
-                    && xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes[0].ChildNodes != null)
-                {
-                    //UNIVIEW、HIKVISION Camera
-                    var utcDateTime = xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes[0].ChildNodes[3];
-                    var time_node = utcDateTime.ChildNodes[0];
-                    var date_node = utcDateTime.ChildNodes[1];
-
-                    var _hour = time_node[0].ToCast<int>();
-                    var _min = time_node[1].ToCast<int>();
-                    var _sec = time_node[2].ToCast<int>();
-
-                    var _year = date_node[0].ToCast<int>();
-                    var _month = date_node[1].ToCast<int>();
-                    var _day = date_node[2].ToCast<int>();
-
-                    return new DateTime(_year, _month, _day, _hour, _min, _sec);
-                }
-                if (xnode_list.ChildNodes != null
-                    && xnode_list.ChildNodes[1].ChildNodes != null
-                    && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes != null
-                    && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[0].ChildNodes != null)
-                {
-                    //Dahua Camera
-                    var utcDateTime = xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[0].ChildNodes[3];
-                    var time_node = utcDateTime.ChildNodes[0];
-                    var date_node = utcDateTime.ChildNodes[1];
-
-                    var _hour = time_node[0].ToCast<int>();
-                    var _min = time_node[1].ToCast<int>();
-                    var _sec = time_node[2].ToCast<int>();
-
-                    var _year = date_node[0].ToCast<int>();
-                    var _month = date_node[1].ToCast<int>();
-                    var _day = date_node[2].ToCast<int>();
-
-                    return new DateTime(_year, _month, _day, _hour, _min, _sec);
-                }
-                #endregion
-            }
-            else
-            {
-                /*请求失败*/
+                var xnode = result.Html.ReplacePattern(@"(<|/)[a-z\-]+:", "$1");
+                var utc = XElement.Parse(xnode).Descendants("UTCDateTime")
+                            .Select(x => new
+                            {
+                                year = x.Element("Date").Element("Year").Value.ToCast<int>(),
+                                month = x.Element("Date").Element("Month").Value.ToCast<int>(),
+                                day = x.Element("Date").Element("Day").Value.ToCast<int>(),
+                                hour = x.Element("Time").Element("Hour").Value.ToCast<int>(),
+                                minute = x.Element("Time").Element("Minute").Value.ToCast<int>(),
+                                second = x.Element("Time").Element("Second").Value.ToCast<int>()
+                            }).FirstOrDefault();
+                if (utc != null)
+                    return new DateTime(utc.year, utc.month, utc.day, utc.hour, utc.minute, utc.second);
             }
             return onvifUTCDateTime;
         }
@@ -76,54 +40,39 @@ namespace XiaoFeng.Onvif
         /// 初始化摄像头服务配置
         /// </summary>
         /// <returns></returns>
-        public static async Task<string> GetCapabilities(string ip)
+        public static async Task<List<string>?> GetCapabilities(string ip)
         {
             string reqMessageStr = @" 
                                       <tds:GetCapabilities> 
                                            <tds:Category>All</tds:Category> 
                                       </tds:GetCapabilities> ";
             var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, "user", "pass", DateTime.Now);
+            var xnode = result.Html.ReplacePattern(@"(<|/)[a-z\-]+:", "$1");
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                try
-                {
-                    var xnode_list = result.Html.XmlToEntity<XmlValue>();
-
-                    foreach (var item in xnode_list.Attributes)
-                    {
-                        var ll = item.Value;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return ex.ToString();
-                }
+                return XElement.Parse(xnode).Descendants("XAddr").Select(x => x.Value).ToList();
             }
             else
             {
-                /*请求失败*/
+                return OnvifAuth.ErrorResponse(xnode).ToCast<List<string>>(); 
             }
-            return "";
+            return default;
         }
         /// <summary>
         /// 获取设备信息
         /// </summary>
         /// <returns></returns>
-        public static async Task<string> GetDeviceInformation(string ip, string user, string pass, DateTime onvifUTCDateTime)
+        public static async Task<string?> GetDeviceInformation(string ip, string user, string pass, DateTime onvifUTCDateTime)
         {
             string reqMessageStr = @" 
                                       <tds:GetDeviceInformation /> ";
             var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            var xnode = result.Html.ReplacePattern(@"(<|/)[a-z\-]+:", "$1");
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 try
                 {
-                    var xnode_list = result.Html.ReplacePattern(@"(<|/)[a-z\-]+:", "$1").XmlToEntity<XmlValue>();
-                    if (xnode_list.ChildNodes.Count > 1)
-                    {
-                        return xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes.ToDictionary(x => x.Name, x => x.Value).ToJson();
-                    }
-                    return xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes.ToDictionary(x => x.Name, x => x.Value).ToJson();
+                    return XElement.Parse(xnode).Descendants("GetDeviceInformationResponse").FirstOrDefault().ToXml().XmlToEntity<XmlValue>().ChildNodes.ToDictionary(x => x.Name, x => x.Value).ToJson();
                 }
                 catch (Exception ex)
                 {
@@ -132,16 +81,8 @@ namespace XiaoFeng.Onvif
             }
             else
             {
-                var xnode_list = result.Html.XmlToEntity<XmlValue>();
-                if (xnode_list.ChildNodes != null
-                       && xnode_list.ChildNodes[1].ChildNodes != null
-                       && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes != null
-                       && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[1].ChildNodes != null)
-                {
-                    return xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[1].ChildNodes[0].Value.ToCast<string>();
-                }
+                return OnvifAuth.ErrorResponse(xnode).ToCast<string>();
             }
-            return "";
         }
     }
 
