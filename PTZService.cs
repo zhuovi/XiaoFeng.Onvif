@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Xml.Linq;
 using XiaoFeng.Xml;
 
 namespace XiaoFeng.Onvif
@@ -25,9 +26,10 @@ namespace XiaoFeng.Onvif
                                           <tptz:ProfileToken>{token}</tptz:ProfileToken>
                                         </tptz:GetStatus>";
             var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            var xnode = result.Html.ReplacePattern(@"(<|/)[a-z\-]+:", "$1");
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                var xnode_list = result.Html.XmlToEntity<XmlValue>();
+               var status =  XElement.Parse(xnode).Descendants("PTZStatus");
             }
             else
             {

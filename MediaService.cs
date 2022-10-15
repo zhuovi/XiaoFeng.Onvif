@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Xml.Linq;
 using XiaoFeng.Xml;
 
 namespace XiaoFeng.Onvif
@@ -10,7 +11,7 @@ namespace XiaoFeng.Onvif
     {
         public static readonly string URL = "onvif/media_service";
         /// <summary>
-        /// 获取设备配置信息
+        /// 获取token信息
         /// </summary>
         /// <param name="ip"></param>
         /// <param name="user"></param>
@@ -23,51 +24,15 @@ namespace XiaoFeng.Onvif
                                          <Type>All</Type>
                                      </GetProfiles>";
             var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            var xnode = result.Html.ReplacePattern(@"(<|/)[a-z0-9\-]+:", "$1");
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                var xnode_list = result.Html.XmlToEntity<XmlValue>();
-                if (xnode_list.ChildNodes != null
-                       && xnode_list.ChildNodes.Count > 1
-                       && xnode_list.ChildNodes[1].ChildNodes != null
-                       && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes != null)
-                {
-                    List<string> tokens = new List<string>();
-                    foreach (var item in xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes)
-                    {
-                        var token = item.Attributes[1].Value;
-                        var profileName = item.ChildNodes[0].Value;
-
-                        tokens.Add(token.ToCast<string>());
-                        foreach (var configurations in item.ChildNodes[1].ChildNodes)
-                        {
-
-                        }
-                    }
-                    return tokens;
-                }
-                else
-                {
-                    List<string> tokens = new List<string>();
-                    foreach (var item in xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes)
-                    {
-                        var token = item.Attributes[0].Value;
-                        var profileName = item.ChildNodes[0].Value;
-
-                        tokens.Add(token.ToCast<string>());
-                        foreach (var configurations in item.ChildNodes[1].ChildNodes)
-                        {
-
-                        }
-                    }
-                    return tokens;
-
-                }
+               return XElement.Parse(xnode).Descendants("Profiles").Attributes("token").Select(x=>x.Value).ToList();
             }
             else
             {
-                /*请求失败*/
+                return OnvifAuth.ErrorResponse(xnode).ToCast<List<string>>();
             }
-            return default;
         }
         /// <summary>
         /// 获取视频流地址
@@ -87,27 +52,15 @@ namespace XiaoFeng.Onvif
                                           <ProfileToken>{token}</ProfileToken>
                                        </GetStreamUri>";
             var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            var xnode = result.Html.ReplacePattern(@"(<|/)[a-z0-9\-]+:", "$1");
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                var xnode_list = result.Html.XmlToEntity<XmlValue>();
-                if (xnode_list.ChildNodes != null
-                       && xnode_list.ChildNodes.Count > 1
-                       && xnode_list.ChildNodes[1].ChildNodes != null
-                       && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes != null
-                       && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[0].ChildNodes != null)
-                {
-                    return xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[0].ChildNodes[0].Value.ToCast<string>();
-                }
-                else 
-                {
-                    return xnode_list.ChildNodes[0].ChildNodes[0].ChildNodes[0].ChildNodes[0].Value.ToCast<string>();
-                }
+                return XElement.Parse(xnode).Descendants("Uri").Select(x => x.Value).FirstOrDefault();
             }
             else
             {
-                /*请求失败*/
+                return OnvifAuth.ErrorResponse(xnode).ToCast<string>();
             }
-            return "";
         }
         /// <summary>
         /// 获取视频快照地址   
@@ -121,29 +74,15 @@ namespace XiaoFeng.Onvif
                                               <trt:ProfileToken>{token}</trt:ProfileToken>
                                        </trt:GetSnapshotUri>";
             var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            var xnode = result.Html.ReplacePattern(@"(<|/)[a-z0-9\-]+:", "$1");
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                var xnode_list = result.Html.XmlToEntity<XmlValue>();
-                if (xnode_list.ChildNodes != null
-                       && xnode_list.ChildNodes[1].ChildNodes != null
-                       && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes != null
-                       && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[0].ChildNodes != null)
-                {
-                    return xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[0].ChildNodes[0].Value.ToCast<string>();
-                }
+                return XElement.Parse(xnode).Descendants("Uri").Select(x => x.Value).FirstOrDefault();
             }
             else
             {
-                var xnode_list = result.Html.XmlToEntity<XmlValue>();
-                if (xnode_list.ChildNodes != null
-                       && xnode_list.ChildNodes[1].ChildNodes != null
-                       && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes != null
-                       && xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[1].ChildNodes != null)
-                {
-                    return xnode_list.ChildNodes[1].ChildNodes[0].ChildNodes[1].ChildNodes[0].Value.ToCast<string>();
-                }
+                return OnvifAuth.ErrorResponse(xnode).ToCast<string>();
             }
-            return "";
         }
     }
 }
