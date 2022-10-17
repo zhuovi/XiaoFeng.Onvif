@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using System.Xml.XPath;
 using XiaoFeng.Xml;
 
 namespace XiaoFeng.Onvif
@@ -26,11 +25,10 @@ namespace XiaoFeng.Onvif
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 var xnode = result.Html.ReplacePattern(@"(<|/)[a-z\-]+:", "$1");
-                //XElement.Parse(xnode).GetXDescendants("UTCDateTime");
                 var utc = XElement.Parse(xnode).Descendants("UTCDateTime")
                             .Select(x => new
                             {
-                                //year=x.XPathSelectElement("/Date/Year").Value.ToCast<int>(),
+                                //year=x.XPathSelectElement("//Date//Year").Value.ToCast<int>(),
                                 year = x.Element("Date").Element("Year").Value.ToCast<int>(),
                                 month = x.Element("Date").Element("Month").Value.ToCast<int>(),
                                 day = x.Element("Date").Element("Day").Value.ToCast<int>(),
@@ -61,9 +59,8 @@ namespace XiaoFeng.Onvif
             }
             else
             {
-                return OnvifAuth.ErrorResponse(xnode).ToCast<List<string>>(); 
+                return OnvifAuth.ErrorResponse(xnode).ToCast<List<string>>();
             }
-            return default;
         }
         /// <summary>
         /// 获取设备信息
