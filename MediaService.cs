@@ -1,5 +1,10 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Xml.XPath;
 using XiaoFeng.Xml;
 
 namespace XiaoFeng.Onvif
@@ -78,6 +83,7 @@ namespace XiaoFeng.Onvif
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 return XElement.Parse(xnode).Descendants("Uri").Select(x => x.Value).FirstOrDefault();
+                //return XElement.Parse(xnode).XPathSelectElements("//Uri").Select(a => a.Value).FirstOrDefault();
             }
             else
             {

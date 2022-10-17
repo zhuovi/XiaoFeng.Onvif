@@ -1,5 +1,10 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Xml.XPath;
 using XiaoFeng.Xml;
 
 namespace XiaoFeng.Onvif
@@ -21,9 +26,11 @@ namespace XiaoFeng.Onvif
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 var xnode = result.Html.ReplacePattern(@"(<|/)[a-z\-]+:", "$1");
+                //XElement.Parse(xnode).GetXDescendants("UTCDateTime");
                 var utc = XElement.Parse(xnode).Descendants("UTCDateTime")
                             .Select(x => new
                             {
+                                //year=x.XPathSelectElement("/Date/Year").Value.ToCast<int>(),
                                 year = x.Element("Date").Element("Year").Value.ToCast<int>(),
                                 month = x.Element("Date").Element("Month").Value.ToCast<int>(),
                                 day = x.Element("Date").Element("Day").Value.ToCast<int>(),
@@ -40,7 +47,7 @@ namespace XiaoFeng.Onvif
         /// 初始化摄像头服务配置
         /// </summary>
         /// <returns></returns>
-        public static async Task<List<string>?> GetCapabilities(string ip)
+        public static async Task<List<string>> GetCapabilities(string ip)
         {
             string reqMessageStr = @" 
                                       <tds:GetCapabilities> 
@@ -62,7 +69,7 @@ namespace XiaoFeng.Onvif
         /// 获取设备信息
         /// </summary>
         /// <returns></returns>
-        public static async Task<string?> GetDeviceInformation(string ip, string user, string pass, DateTime onvifUTCDateTime)
+        public static async Task<string> GetDeviceInformation(string ip, string user, string pass, DateTime onvifUTCDateTime)
         {
             string reqMessageStr = @" 
                                       <tds:GetDeviceInformation /> ";

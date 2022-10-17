@@ -5,12 +5,12 @@ VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XiaoFeng.Onvif", "XiaoFeng.Onvif.csproj", "{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "..\ConsoleApp1\ConsoleApp1.csproj", "{90008CD8-8156-40F7-8C0D-DDC0032F706D}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DEC0544B-421C-466B-9C0E-F24DE0FC3D8F}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnvifTest", "..\OnvifTest\OnvifTest.csproj", "{90EB0838-9B1C-4EE1-9F84-AB4F9C220978}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,10 +22,10 @@ Global
 		{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFEDFE5B-46CB-4ED8-8381-51C6AB13AAFE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{90008CD8-8156-40F7-8C0D-DDC0032F706D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90008CD8-8156-40F7-8C0D-DDC0032F706D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90008CD8-8156-40F7-8C0D-DDC0032F706D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90008CD8-8156-40F7-8C0D-DDC0032F706D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90EB0838-9B1C-4EE1-9F84-AB4F9C220978}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90EB0838-9B1C-4EE1-9F84-AB4F9C220978}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90EB0838-9B1C-4EE1-9F84-AB4F9C220978}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90EB0838-9B1C-4EE1-9F84-AB4F9C220978}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

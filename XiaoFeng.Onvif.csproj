@@ -1,37 +1,38 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <Title>封装Onvif常用接口、设备、媒体、云台等功能</Title>
-    <Authors>畅聊了个科技</Authors>
-    <Description>封装Onvif常用接口、设备、媒体、云台等功能</Description>
-    <PackageProjectUrl>https://github.com/zhuovi/XiaoFeng.Onvif</PackageProjectUrl>
-    <PackageIcon>onvif.png</PackageIcon>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags>FAYELF</PackageTags>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>.netstandard2.0;.netstandard2.1;</TargetFrameworks>
+		<Title>封装Onvif常用接口、设备、媒体、云台等功能</Title>
+		<Authors>畅聊了个科技</Authors>
+		<Description>封装Onvif常用接口、设备、媒体、云台等功能</Description>
+		<PackageProjectUrl>https://github.com/zhuovi/XiaoFeng.Onvif</PackageProjectUrl>
+		<PackageIcon>onvif.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageTags>FAYELF</PackageTags>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	</PropertyGroup>
+	<PropertyGroup>
+		<DefineConstants Condition="'$(TargetFramework)'=='netstandard2.0'">$(DefineConstants);NETCORE;</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)'=='netstandard2.1'">$(DefineConstants);NETCORE;</DefineConstants>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="XiaoFeng" Version="3.0.7" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="XiaoFeng" Version="3.0.6" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="LICENSE">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Update="onvif.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Update="README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Update="onvif.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Update="README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>

@@ -1,4 +1,9 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace XiaoFeng.Onvif
@@ -21,7 +26,7 @@ namespace XiaoFeng.Onvif
             var headToken = GetHeadToken(user, pass, onvifUTCDateTime);
             return await Http.HttpHelper.GetHtmlAsync(new Http.HttpRequest
             {
-                Method = HttpMethod.Post.ToString(),
+                Method = HttpMethod.Post,
                 ContentType = "application/xml",
                 Address = $"http://{ip}/{url}",
                 BodyData = $"{EnvelopeHeader()}{headToken}{EnvelopeBody(reqMessageStr)}{EnvelopeFooter()}"
@@ -53,7 +58,7 @@ namespace XiaoFeng.Onvif
         {
             byte[] nonce = new byte[16];
             new Random().NextBytes(nonce);
-            return System.Convert.ToBase64String(nonce);
+            return nonce.ToBase64String();
         }
 
         /// <summary>
@@ -67,7 +72,6 @@ namespace XiaoFeng.Onvif
         {
             string nonce = GetNonce();
             string created = onvifUTCDateTime.ToString("yyyy-MM-ddThh:mm:ssZ");
-            string pass = GetPasswordDigest(nonce, created, password);
             //设置发送消息体
             return $@"
                               <s:Header xmlns:s=""http://www.w3.org/2003/05/soap-envelope"">
@@ -75,7 +79,7 @@ namespace XiaoFeng.Onvif
                                                 xmlns:wsu=""http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd""> 
                                            <wsse:UsernameToken> 
                                                <wsse:Username>{username}</wsse:Username>
-                                               <wsse:Password Type=""http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest"">{pass}</wsse:Password>
+                                               <wsse:Password Type=""http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordDigest"">{GetPasswordDigest(nonce, created, password)}</wsse:Password>
                                                <wsse:Nonce>{nonce}</wsse:Nonce> 
                                                <wsu:Created>{created}</wsu:Created>
                                            </wsse:UsernameToken>
@@ -97,7 +101,7 @@ namespace XiaoFeng.Onvif
         /// <returns></returns>
         public static string EnvelopeBody(string bodyContent)
         {
-            return @$"  
+            return $@"  
                               <s:Body>
                                  {bodyContent}  
                              </s:Body>";
@@ -116,7 +120,7 @@ namespace XiaoFeng.Onvif
         /// </summary>
         /// <param name="xnode"></param>
         /// <returns></returns>
-        public static object? ErrorResponse(string xnode)
+        public static object ErrorResponse(string xnode)
         {
             return XElement.Parse(xnode).Descendants("Reason").Select(x => x.Element("Text").Value).Cast<string>().FirstOrDefault();
         }
