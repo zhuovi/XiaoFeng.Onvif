@@ -18,7 +18,7 @@
 		<VersionPrefix>1.0</VersionPrefix>
 		<VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
 		<Version>$(VersionPrefix).$(VersionSuffix)</Version>
-		<Copyright>©2022-2032 XiaoFeng</Copyright>
+		<Copyright>©2022-2022 XiaoFeng</Copyright>
 		<RepositoryType>git</RepositoryType>
 		<PackageReleaseNotes>兼容任何版本</PackageReleaseNotes>
 		<AssemblyVersion>$(VersionPrefix).$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</AssemblyVersion>
@@ -32,18 +32,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="LICENSE">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-		<None Update="onvif.png">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-		<None Update="README.md">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
+		<None Include="onvif.png" Pack="true" Visible="false" PackagePath="" />
+		<None Include="README.md" Pack="true" Visible="false" PackagePath="" />
+		<None Include="LICENSE" Pack="true" Visible="false" PackagePath="" />
 	</ItemGroup>
 
 </Project>
