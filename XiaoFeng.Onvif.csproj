@@ -28,7 +28,7 @@
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="XiaoFeng" Version="3.0.7" />
+		<PackageReference Include="XiaoFeng" Version="3.0.9" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -19,6 +19,8 @@ namespace XiaoFeng.Onvif
         /// </summary>
         public static async Task<DateTime> GetSystemDateAndTime(string ip)
         {
+            if (!PrototypeHelper.IsIP(ip)) throw new Exception($"IP:{ip}格式不正确");
+            if (!Utility.CheckPingEnable(ip)) throw new Exception($"Onvif主机{ip}无响应");
             var onvifUTCDateTime = DateTime.Now;
             string reqMessageStr = "<tds:GetSystemDateAndTime/>";
             var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, "user", "pass", onvifUTCDateTime);

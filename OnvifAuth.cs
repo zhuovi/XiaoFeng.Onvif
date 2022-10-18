@@ -10,6 +10,7 @@ namespace XiaoFeng.Onvif
 {
     public class OnvifAuth
     {
+
         /// <summary>
         /// 远程调用
         /// </summary>
@@ -27,6 +28,7 @@ namespace XiaoFeng.Onvif
             return await Http.HttpHelper.GetHtmlAsync(new Http.HttpRequest
             {
                 Method = HttpMethod.Post,
+                KeepAlive = false,
                 ContentType = "application/xml",
                 Address = $"http://{ip}/{url}",
                 BodyData = $"{EnvelopeHeader()}{headToken}{EnvelopeBody(reqMessageStr)}{EnvelopeFooter()}"
