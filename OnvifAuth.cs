@@ -5,12 +5,12 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using XiaoFeng.Http;
 
 namespace XiaoFeng.Onvif
 {
     public class OnvifAuth
     {
-
         /// <summary>
         /// 远程调用
         /// </summary>
@@ -21,13 +21,14 @@ namespace XiaoFeng.Onvif
         /// <param name="pass"></param>
         /// <param name="onvifUTCDateTime"></param>
         /// <returns></returns>
-        public static async Task<Http.HttpResponse> RemoteClient(string ip, string url, string reqMessageStr,
+        public static async Task<HttpResponse> RemoteClient(string ip, string url, string reqMessageStr,
             string user, string pass, DateTime onvifUTCDateTime)
         {
             var headToken = GetHeadToken(user, pass, onvifUTCDateTime);
-            return await Http.HttpHelper.GetHtmlAsync(new Http.HttpRequest
+            return await HttpHelper.GetHtmlAsync(new HttpRequest
             {
-                Method = HttpMethod.Post,
+                HttpCore = HttpCore.HttpClient,
+                Method = Http.HttpMethod.Post,
                 KeepAlive = false,
                 ContentType = "application/xml",
                 Address = $"http://{ip}/{url}",
@@ -117,6 +118,30 @@ namespace XiaoFeng.Onvif
             return @"
                      </s:Envelope> ";
         }
+        /// <summary>
+        /// 探查消息
+        /// </summary>
+        /// <returns></returns>
+        public static byte[] UdpProbeMessage()
+        {
+            return $@"<?xml version=""1.0"" encoding=""UTF-8""?>
+                <e:Envelope xmlns:e=""http://www.w3.org/2003/05/soap-envelope""
+                xmlns:w=""http://schemas.xmlsoap.org/ws/2004/08/addressing""
+                xmlns:d=""http://schemas.xmlsoap.org/ws/2005/04/discovery""
+                xmlns:dn=""http://www.onvif.org/ver10/network/wsdl"">
+                <e:Header>
+                      <w:MessageID>uuid:{Guid.NewGuid().ToString("N")}</w:MessageID>
+                      <w:To e:mustUnderstand=""true"">urn:schemas-xmlsoap-org:ws:2005:04:discovery</w:To>
+                      <w:Action a:mustUnderstand=""true"">http://schemas.xmlsoap.org/ws/2005/04/discovery/Probe</w:Action>
+                </e:Header>
+                <e:Body>
+                <d:Probe>
+                         <d:Types>dn:NetworkVideoTransmitter</d:Types>
+                </d:Probe>
+                </e:Body>
+                </e:Envelope>".GetBytes();
+        }
+
         /// <summary>
         /// 统一错误响应
         /// </summary>

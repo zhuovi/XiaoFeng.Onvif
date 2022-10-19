@@ -10,13 +10,21 @@ var ip = "192.168.12.2";
 var user = "onvif";
 var pass = "123456";
 
+var resu = await DeviceService.DiscoveryOnvif(3);
+
 var onvifUTCDateTime = await DeviceService.GetSystemDateAndTime(ip);
-var info= await DeviceService.GetDeviceInformation(ip, user, pass, onvifUTCDateTime);
-var  capabilities= await DeviceService.GetCapabilities(ip);
+var info = await DeviceService.GetDeviceInformation(ip, user, pass, onvifUTCDateTime);
+var abilities= await DeviceService.GetCapabilities(ip);
 var tokens = await MediaService.GetProfiles(ip, user, pass, onvifUTCDateTime);
 var streamUri = await MediaService.GetStreamUri(ip, user, pass, onvifUTCDateTime, tokens[0]);
-var img =  await MediaService.GetSnapshotUri(ip, user, pass, onvifUTCDateTime, tokens[0]);
-var status=  await PTZService.GetStatus(ip, user, pass, onvifUTCDateTime, tokens[0]);
+var img = await MediaService.GetSnapshotUri(ip, user, pass, onvifUTCDateTime, tokens[0]);
+
+await PTZService.GetStatus(ip, user, pass, onvifUTCDateTime, tokens[0]);
+await PTZService.SetHomePosition(ip, user, pass, onvifUTCDateTime, tokens[0]);
+await PTZService.AbsoluteMove(ip, user, pass, onvifUTCDateTime, tokens[0], 0, 0);
+await PTZService.ContinuousMove(ip, user, pass, onvifUTCDateTime, tokens[0], 0.6, 0.2, 1);
+await PTZService.RelativeMove(ip, user, pass, onvifUTCDateTime, tokens[0], 0.8, 0.5, 0.5);
+await PTZService.GotoHomePosition(ip, user, pass, onvifUTCDateTime, tokens[0], 0.3, 1, 1);
 
 ```
 

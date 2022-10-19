@@ -5,6 +5,8 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using XiaoFeng.Xml;
+using XiaoFeng;
+
 
 namespace XiaoFeng.Onvif
 {
@@ -14,6 +16,48 @@ namespace XiaoFeng.Onvif
     public class DeviceService
     {
         public static readonly string URL = "onvif/device_service";
+
+        /// <summary>
+        /// 设备发现-基于当前网卡的网段局域网扫描
+        /// </summary>
+        /// <returns></returns>
+        public static async Task<string> DiscoveryOnvif(int timeoutSecond)
+        {
+            var list = await Utility.UdpOnvifClient(timeoutSecond);
+            #region BufferToObject数据处理
+            var data = new List<dynamic>();
+            foreach (var item in list)
+            {
+                var info = item.Buffer.GetString();
+                var ipAddrs = info.GetMatch(@"XAddrs>(?<a>[^<]+)");
+                string ipv4 = string.Empty, ipv6 = string.Empty;
+                if (ipAddrs.IsNotNullOrEmpty())
+                {
+                    var ips = ipAddrs.UrlDecode().SplitPattern(@"\s");
+                    if (ips.Length == 1)
+                    {
+                        ipv4 = ips[0];
+                    }
+                    else if (ips.Length > 1)
+                    {
+                        ipv4 = ips[0]; ipv6 = ips[1];
+                    }
+                }
+                data.Add(new
+                {
+                    Name = info.GetMatch(@"onvif://www.onvif.org/name/(?<a>[^\s]+)").UrlDecode(),
+                    Hardware = info.GetMatch(@"onvif://www.onvif.org/hardware/(?<a>[^\s]+)").UrlDecode(),
+                    Ipv4Address = ipv4,
+                    Ipv6Address = ipv6,
+                    Remote = item.RemoteEndPoint.Address.ToString(),
+                    Port = item.RemoteEndPoint.Port,
+                    Types = info.GetMatch(@"Types>(?<a>[^<]+)")
+                });
+            }
+            #endregion
+            return data.ToJson();
+        }
+
         /// <summary>
         /// 获取服务器时间
         /// </summary>

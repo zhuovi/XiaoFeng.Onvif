@@ -3,12 +3,60 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Text;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace XiaoFeng.Onvif
 {
-    public class Utility
+    /// <summary>
+    /// 通用工具类
+    /// </summary>
+    public static class Utility
     {
+        public static async Task<List<UdpReceiveResult>> UdpOnvifClient(int timeout)
+        {
+            var sendBuffer = OnvifAuth.UdpProbeMessage();
+            var ipa = new IPEndPoint(IPAddress.Parse("239.255.255.250"), 3702);
+            var udp = new UdpClient()
+            {
+                EnableBroadcast = true
+            };
+            await udp.SendAsync(sendBuffer, sendBuffer.Length, ipa);
+            var list = new List<UdpReceiveResult>();
+            while (true)
+            {
+                try
+                {
+                    var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeout));
+                    if (cts.IsCancellationRequested) break;
+                    var ata = await udp.ReceiveAsync().WithCancellation(cts.Token);
+                    list.Add(ata);
+                }
+                catch (Exception)
+                {
+                    break;
+                }
+            }
+            udp.Close();
+            udp.Dispose();
+            return list;
+        }
+
+        /// <summary>
+        /// 用于为返回任务的任何异步Task<T>方法提供取消可能性
+        /// </summary>
+        public static async Task<T> WithCancellation<T>(this Task<T> task, CancellationToken cancellationToken)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
+            {
+                if (task != await Task.WhenAny(task, tcs.Task))
+                {
+                    throw new OperationCanceledException(cancellationToken);
+                }
+            }
+            return await task;
+        }
         /// <summary>
         /// 检查IP是否ping通
         /// </summary>
