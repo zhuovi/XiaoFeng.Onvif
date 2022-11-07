@@ -53,7 +53,6 @@ namespace XiaoFeng.Onvif
             var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                await Stop(ip, user, pass, onvifUTCDateTime, token);
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
             }
             else
@@ -114,7 +113,6 @@ namespace XiaoFeng.Onvif
             var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                await Stop(ip, user, pass, onvifUTCDateTime, token);
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
             }
             else
@@ -142,7 +140,6 @@ namespace XiaoFeng.Onvif
             var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                await Stop(ip, user, pass, onvifUTCDateTime, token);
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
             }
             else
@@ -165,7 +162,6 @@ namespace XiaoFeng.Onvif
             var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                await Stop(ip, user, pass, onvifUTCDateTime, token);
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
             }
             else
@@ -192,7 +188,6 @@ namespace XiaoFeng.Onvif
             var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
-                await Stop(ip, user, pass, onvifUTCDateTime, token);
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
             }
             else
