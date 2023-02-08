@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
+using System.Net;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using XiaoFeng.Http;
@@ -21,9 +20,10 @@ namespace XiaoFeng.Onvif
         /// <param name="pass"></param>
         /// <param name="onvifUTCDateTime"></param>
         /// <returns></returns>
-        public static async Task<HttpResponse> RemoteClient(string ip, string url, string reqMessageStr,
+        public static async Task<HttpResponse> RemoteClient(IPEndPoint iPEndPoint, string url, string reqMessageStr,
             string user, string pass, DateTime onvifUTCDateTime)
         {
+
             var headToken = GetHeadToken(user, pass, onvifUTCDateTime);
             return await HttpHelper.GetHtmlAsync(new HttpRequest
             {
@@ -31,7 +31,7 @@ namespace XiaoFeng.Onvif
                 Method = Http.HttpMethod.Post,
                 KeepAlive = false,
                 ContentType = "application/xml",
-                Address = $"http://{ip}/{url}",
+                Address = $"http://{iPEndPoint}/{url}",
                 BodyData = $"{EnvelopeHeader()}{headToken}{EnvelopeBody(reqMessageStr)}{EnvelopeFooter()}"
             });
         }

@@ -61,13 +61,14 @@ namespace XiaoFeng.Onvif
         /// <summary>
         /// 获取服务器时间
         /// </summary>
-        public static async Task<DateTime> GetSystemDateAndTime(string ip)
+        public static async Task<DateTime> GetSystemDateAndTime(IPEndPoint iPEndPoint)
         {
+            string ip = iPEndPoint.Address.ToString();
             if (!PrototypeHelper.IsIP(ip)) throw new Exception($"IP:{ip}格式不正确");
             if (!Utility.CheckPingEnable(ip)) throw new Exception($"Onvif主机{ip}无响应");
             var onvifUTCDateTime = DateTime.Now;
             string reqMessageStr = "<tds:GetSystemDateAndTime/>";
-            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, "user", "pass", onvifUTCDateTime);
+            var result = await OnvifAuth.RemoteClient(iPEndPoint, URL, reqMessageStr, "user", "pass", onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 var xnode = result.Html.ReplacePattern(@"(<|/)[a-z\-]+:", "$1");
@@ -91,13 +92,13 @@ namespace XiaoFeng.Onvif
         /// 初始化摄像头服务配置
         /// </summary>
         /// <returns></returns>
-        public static async Task<List<string>> GetCapabilities(string ip)
+        public static async Task<List<string>> GetCapabilities(IPEndPoint iPEndPoint)
         {
             string reqMessageStr = @" 
                                       <tds:GetCapabilities> 
                                            <tds:Category>All</tds:Category> 
                                       </tds:GetCapabilities> ";
-            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, "user", "pass", DateTime.Now);
+            var result = await OnvifAuth.RemoteClient(iPEndPoint, URL, reqMessageStr, "user", "pass", DateTime.Now);
             var xnode = result.Html.ReplacePattern(@"(<|/)[a-z\-]+:", "$1");
             if (result.StatusCode == HttpStatusCode.OK)
             {
@@ -112,11 +113,11 @@ namespace XiaoFeng.Onvif
         /// 获取设备信息
         /// </summary>
         /// <returns></returns>
-        public static async Task<string> GetDeviceInformation(string ip, string user, string pass, DateTime onvifUTCDateTime)
+        public static async Task<string> GetDeviceInformation(IPEndPoint iPEndPoint, string user, string pass, DateTime onvifUTCDateTime)
         {
             string reqMessageStr = @" 
                                       <tds:GetDeviceInformation /> ";
-            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            var result = await OnvifAuth.RemoteClient(iPEndPoint, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             var xnode = result.Html.ReplacePattern(@"(<|/)[a-z\-]+:", "$1");
             if (result.StatusCode == HttpStatusCode.OK)
             {

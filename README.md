@@ -7,24 +7,27 @@
 using XiaoFeng.Onvif;
 
 var ip = "192.168.12.2";
+var port=8088;
 var user = "onvif";
 var pass = "123456";
 
+var iPEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
+
 var resu = await DeviceService.DiscoveryOnvif(3);
 
-var onvifUTCDateTime = await DeviceService.GetSystemDateAndTime(ip);
-var info = await DeviceService.GetDeviceInformation(ip, user, pass, onvifUTCDateTime);
-var abilities= await DeviceService.GetCapabilities(ip);
-var tokens = await MediaService.GetProfiles(ip, user, pass, onvifUTCDateTime);
-var streamUri = await MediaService.GetStreamUri(ip, user, pass, onvifUTCDateTime, tokens[0]);
-var img = await MediaService.GetSnapshotUri(ip, user, pass, onvifUTCDateTime, tokens[0]);
+var onvifUTCDateTime = await DeviceService.GetSystemDateAndTime(iPEndPoint);
+var info = await DeviceService.GetDeviceInformation(iPEndPoint, user, pass, onvifUTCDateTime);
+var abilities= await DeviceService.GetCapabilities(iPEndPoint);
+var tokens = await MediaService.GetProfiles(iPEndPoint, user, pass, onvifUTCDateTime);
+var streamUri = await MediaService.GetStreamUri(iPEndPoint, user, pass, onvifUTCDateTime, tokens[0]);
+var img = await MediaService.GetSnapshotUri(iPEndPoint, user, pass, onvifUTCDateTime, tokens[0]);
 
-await PTZService.GetStatus(ip, user, pass, onvifUTCDateTime, tokens[0]);
-await PTZService.SetHomePosition(ip, user, pass, onvifUTCDateTime, tokens[0]);
-await PTZService.AbsoluteMove(ip, user, pass, onvifUTCDateTime, tokens[0], 0, 0);
-await PTZService.ContinuousMove(ip, user, pass, onvifUTCDateTime, tokens[0], 0.6, 0.2, 1);
-await PTZService.RelativeMove(ip, user, pass, onvifUTCDateTime, tokens[0], 0.8, 0.5, 0.5);
-await PTZService.GotoHomePosition(ip, user, pass, onvifUTCDateTime, tokens[0], 0.3, 1, 1);
+await PTZService.GetStatus(iPEndPoint, user, pass, onvifUTCDateTime, tokens[0]);
+await PTZService.SetHomePosition(iPEndPoint, user, pass, onvifUTCDateTime, tokens[0]);
+await PTZService.AbsoluteMove(iPEndPoint, user, pass, onvifUTCDateTime, tokens[0], 0, 0);
+await PTZService.ContinuousMove(iPEndPoint, user, pass, onvifUTCDateTime, tokens[0], 0.6, 0.2, 1);
+await PTZService.RelativeMove(iPEndPoint, user, pass, onvifUTCDateTime, tokens[0], 0.8, 0.5, 0.5);
+await PTZService.GotoHomePosition(iPEndPoint, user, pass, onvifUTCDateTime, tokens[0], 0.3, 1, 1);
 
 ```
 

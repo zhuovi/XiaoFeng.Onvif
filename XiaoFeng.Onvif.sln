@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OnvifTest", "..\OnvifTest\OnvifTest.csproj", "{90EB0838-9B1C-4EE1-9F84-AB4F9C220978}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFormsApp1", "..\WindowsFormsApp1\WindowsFormsApp1.csproj", "{55C4BF33-3C61-457C-96E5-8E5B25013507}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{90EB0838-9B1C-4EE1-9F84-AB4F9C220978}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90EB0838-9B1C-4EE1-9F84-AB4F9C220978}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90EB0838-9B1C-4EE1-9F84-AB4F9C220978}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55C4BF33-3C61-457C-96E5-8E5B25013507}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55C4BF33-3C61-457C-96E5-8E5B25013507}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55C4BF33-3C61-457C-96E5-8E5B25013507}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55C4BF33-3C61-457C-96E5-8E5B25013507}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

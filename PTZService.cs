@@ -12,7 +12,7 @@ namespace XiaoFeng.Onvif
     /// </summary>
     public class PTZService
     {
-        public static readonly string URL = "onvif/media_service";
+        public static readonly string URL = "onvif/ptz_service";
         /// <summary>
         /// 获取云台状态
         /// </summary>
@@ -22,13 +22,13 @@ namespace XiaoFeng.Onvif
         /// <param name="onvifUTCDateTime"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task<List<string>> GetStatus(string ip, string user, string pass, DateTime onvifUTCDateTime,string token)
+        public static async Task<List<string>> GetStatus(IPEndPoint iPEndPoint, string user, string pass, DateTime onvifUTCDateTime,string token)
         {
             string reqMessageStr = $@"
                                         <tptz:GetStatus xmlns:tptz=""http://www.onvif.org/ver20/ptz/wsdl"">
                                           <tptz:ProfileToken>{token}</tptz:ProfileToken>
                                         </tptz:GetStatus>";
-            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            var result = await OnvifAuth.RemoteClient(iPEndPoint, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             var xnode = result.Html.ReplacePattern(@"(<|/)[a-z\-]+:", "$1");
             if (result.StatusCode == HttpStatusCode.OK)
             {
@@ -40,7 +40,7 @@ namespace XiaoFeng.Onvif
             }
             return default;
         }
-        public static async Task<List<string>> AbsoluteMove(string ip, string user, string pass,
+        public static async Task<List<string>> AbsoluteMove(IPEndPoint iPEndPoint, string user, string pass,
             DateTime onvifUTCDateTime, string token,double x, double y)
         {
             string reqMessageStr = $@"
@@ -50,7 +50,7 @@ namespace XiaoFeng.Onvif
                                 <tt:PanTilt x=""{x}"" y=""{y}"" space=""http://www.onvif.org/ver10/tptz/PanTiltSpaces/PositionGenericSpace"" />
                               </tptz:Position>
                         </tptz:AbsoluteMove>";
-            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            var result = await OnvifAuth.RemoteClient(iPEndPoint, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
@@ -70,7 +70,7 @@ namespace XiaoFeng.Onvif
         /// <param name="onvifUTCDateTime"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task<List<string>> Stop(string ip, string user, string pass,
+        public static async Task<List<string>> Stop(IPEndPoint iPEndPoint, string user, string pass,
            DateTime onvifUTCDateTime, string token)
         {
             string reqMessageStr = $@"
@@ -79,7 +79,7 @@ namespace XiaoFeng.Onvif
                                 <tptz:PanTilt>true</tptz:PanTilt>
                                 <tptz:Zoom>true</tptz:Zoom>
                         </tptz:Stop>";
-            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            var result = await OnvifAuth.RemoteClient(iPEndPoint, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
@@ -99,7 +99,7 @@ namespace XiaoFeng.Onvif
         /// <param name="onvifUTCDateTime"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task<List<string>> ContinuousMove(string ip, string user, string pass,
+        public static async Task<List<string>> ContinuousMove(IPEndPoint iPEndPoint, string user, string pass,
           DateTime onvifUTCDateTime, string token, double x, double y, double z)
         {
             string reqMessageStr = $@"
@@ -110,7 +110,7 @@ namespace XiaoFeng.Onvif
                             <tt:Zoom x=""{z}"" />
                           </tptz:Velocity>
                         </tptz:ContinuousMove>";
-            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            var result = await OnvifAuth.RemoteClient(iPEndPoint, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
@@ -130,14 +130,14 @@ namespace XiaoFeng.Onvif
         /// <param name="onvifUTCDateTime"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task<List<string>> SetHomePosition(string ip, string user, string pass,
+        public static async Task<List<string>> SetHomePosition(IPEndPoint iPEndPoint, string user, string pass,
           DateTime onvifUTCDateTime, string token)
         {
             string reqMessageStr = $@"
                        <tptz:SetHomePosition xmlns:tptz=""http://www.onvif.org/ver20/ptz/wsdl"">
                           <tptz:ProfileToken>{token}</tptz:ProfileToken>
                         </tptz:SetHomePosition>";
-            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            var result = await OnvifAuth.RemoteClient(iPEndPoint, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
@@ -148,7 +148,7 @@ namespace XiaoFeng.Onvif
             }
             return default;
         }
-        public static async Task<List<string>> GotoHomePosition(string ip, string user, string pass,
+        public static async Task<List<string>> GotoHomePosition(IPEndPoint iPEndPoint, string user, string pass,
          DateTime onvifUTCDateTime, string token, double x, double y, double z)
         {
             string reqMessageStr = $@"
@@ -159,7 +159,7 @@ namespace XiaoFeng.Onvif
                             <tt:Zoom x=""{z}"" space=""http://uri1"" />
                           </tptz:Speed>
                         </tptz:GotoHomePosition>";
-            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            var result = await OnvifAuth.RemoteClient(iPEndPoint, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
@@ -170,7 +170,7 @@ namespace XiaoFeng.Onvif
             }
             return default;
         }
-        public static async Task<List<string>> RelativeMove(string ip, string user, string pass,
+        public static async Task<List<string>> RelativeMove(IPEndPoint iPEndPoint, string user, string pass,
          DateTime onvifUTCDateTime, string token, double x, double y, double z)
         {
             string reqMessageStr = $@"
@@ -185,7 +185,7 @@ namespace XiaoFeng.Onvif
                             <tt:Zoom x=""{z}"" />
                           </tptz:Speed>
                         </tptz:RelativeMove>";
-            var result = await OnvifAuth.RemoteClient(ip, URL, reqMessageStr, user, pass, onvifUTCDateTime);
+            var result = await OnvifAuth.RemoteClient(iPEndPoint, URL, reqMessageStr, user, pass, onvifUTCDateTime);
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 var xnode_list = result.Html.XmlToEntity<XmlValue>();
