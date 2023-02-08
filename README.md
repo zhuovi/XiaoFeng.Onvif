@@ -2,6 +2,28 @@
 
 **在你的项目中添加nuget包引用，搜索 XiaoFeng.Onvif**
 
+![fayelf](https://user-images.githubusercontent.com/16105174/197918392-29d40971-a8a2-4be4-ac17-323f1d0bed82.png)
+
+![GitHub top language](https://img.shields.io/github/languages/top/zhuovi/xiaofeng.Onvif?logo=github)
+![GitHub License](https://img.shields.io/github/license/zhuovi/xiaofeng.Onvif?logo=github)
+![Nuget Downloads](https://img.shields.io/nuget/dt/xiaofeng.Onvif?logo=nuget)
+![Nuget](https://img.shields.io/nuget/v/xiaofeng.Onvif?logo=nuget)
+![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/xiaofeng.Onvif?label=dev%20nuget&logo=nuget)
+
+Nuget：XiaoFeng.Onvif
+
+QQ群号：748408911 
+
+QQ群二维码： 
+
+![QQ 群](https://user-images.githubusercontent.com/16105174/198058269-0ea5928c-a2fc-4049-86da-cca2249229ae.png)
+
+公众号： 
+
+![畅聊了个科技](https://user-images.githubusercontent.com/16105174/198059698-adbf29c3-60c2-4c76-b894-21793b40cf34.jpg)
+
+源码： https://github.com/zhuovi/xiaofeng.Onvif
+
 #### 基本用法
 ```
 using XiaoFeng.Onvif;
