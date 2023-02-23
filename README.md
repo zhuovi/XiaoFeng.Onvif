@@ -12,15 +12,9 @@
 
 Nuget：XiaoFeng.Onvif
 
-QQ群号：748408911 
-
-QQ群二维码： 
-
-![QQ 群](https://user-images.githubusercontent.com/16105174/198058269-0ea5928c-a2fc-4049-86da-cca2249229ae.png)
-
-公众号： 
-
-![畅聊了个科技](https://user-images.githubusercontent.com/16105174/198059698-adbf29c3-60c2-4c76-b894-21793b40cf34.jpg)
+| QQ群号 | QQ群 | 公众号 |
+| :----:| :----: | :----: |
+| 748408911  | ![QQ 群](https://user-images.githubusercontent.com/16105174/198058269-0ea5928c-a2fc-4049-86da-cca2249229ae.png) | ![畅聊了个科技](https://user-images.githubusercontent.com/16105174/198059698-adbf29c3-60c2-4c76-b894-21793b40cf34.jpg) |
 
 源码： https://github.com/zhuovi/xiaofeng.Onvif
 
