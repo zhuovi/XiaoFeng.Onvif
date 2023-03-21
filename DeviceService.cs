@@ -49,6 +49,7 @@ namespace XiaoFeng.Onvif
                     Hardware = info.GetMatch(@"onvif://www.onvif.org/hardware/(?<a>[^\s]+)").UrlDecode(),
                     Ipv4Address = ipv4,
                     Ipv6Address = ipv6,
+                    ServiceAddress = ipAddrs,
                     Remote = item.RemoteEndPoint.Address.ToString(),
                     Port = item.RemoteEndPoint.Port,
                     Types = info.GetMatch(@"Types>(?<a>[^<]+)")
