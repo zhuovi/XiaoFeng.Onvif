@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using XiaoFeng.Xml;
 using XiaoFeng;
-
+using System.Text.RegularExpressions;
 
 namespace XiaoFeng.Onvif
 {
@@ -21,41 +21,30 @@ namespace XiaoFeng.Onvif
         /// 设备发现-基于当前网卡的网段局域网扫描
         /// </summary>
         /// <returns></returns>
-        public static async Task<string> DiscoveryOnvif(int timeoutSecond)
+        public static async Task<List<DiscoveryOnvifInfo>> DiscoveryOnvif(int timeoutSecond, string netMask = "255.255.255.255")
         {
-            var list = await Utility.UdpOnvifClient(timeoutSecond);
+            var list = await Utility.UdpOnvifClient(timeoutSecond, netMask);
             #region BufferToObject数据处理
-            var data = new List<dynamic>();
+            var data = new List<DiscoveryOnvifInfo>();
             foreach (var item in list)
             {
                 var info = item.Buffer.GetString();
                 var ipAddrs = info.GetMatch(@"XAddrs>(?<a>[^<]+)");
-                string ipv4 = string.Empty, ipv6 = string.Empty;
-                if (ipAddrs.IsNotNullOrEmpty())
-                {
-                    var ips = ipAddrs.UrlDecode().SplitPattern(@"\s");
-                    if (ips.Length == 1)
-                    {
-                        ipv4 = ips[0];
-                    }
-                    else if (ips.Length > 1)
-                    {
-                        ipv4 = ips[0]; ipv6 = ips[1];
-                    }
-                }
-                data.Add(new
+                Uri uri = new Uri(ipAddrs);
+                var port = uri.Port.ToString();
+                var host = uri.Host;
+                data.Add(new DiscoveryOnvifInfo
                 {
                     Name = info.GetMatch(@"onvif://www.onvif.org/name/(?<a>[^\s]+)").UrlDecode(),
+                    UUID = info.GetMatch(@"wsa:Address>(?<a>[^<]+)").Split(':').LastOrDefault(),
                     Hardware = info.GetMatch(@"onvif://www.onvif.org/hardware/(?<a>[^\s]+)").UrlDecode(),
-                    Ipv4Address = ipv4,
-                    Ipv6Address = ipv6,
-                    Remote = item.RemoteEndPoint.Address.ToString(),
-                    Port = item.RemoteEndPoint.Port,
-                    Types = info.GetMatch(@"Types>(?<a>[^<]+)")
+                    Ip = host,
+                    Port = port,
+                    Types = info.GetMatch(@"Types>(?<a>[^<]+)").Split(':').LastOrDefault()
                 });
             }
             #endregion
-            return data.ToJson();
+            return data;
         }
 
         /// <summary>

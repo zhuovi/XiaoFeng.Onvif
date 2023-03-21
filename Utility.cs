@@ -13,10 +13,10 @@ namespace XiaoFeng.Onvif
     /// </summary>
     public static class Utility
     {
-        public static async Task<List<UdpReceiveResult>> UdpOnvifClient(int timeout)
+        public static async Task<List<UdpReceiveResult>> UdpOnvifClient(int timeout, string netMask)
         {
             var sendBuffer = OnvifAuth.UdpProbeMessage();
-            var ipa = new IPEndPoint(IPAddress.Parse("239.255.255.250"), 3702);
+            var ipa = new IPEndPoint(IPAddress.Parse(netMask), 3702);
             var udp = new UdpClient()
             {
                 EnableBroadcast = true
@@ -32,7 +32,7 @@ namespace XiaoFeng.Onvif
                     var ata = await udp.ReceiveAsync().WithCancellation(cts.Token);
                     list.Add(ata);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     break;
                 }
@@ -40,6 +40,31 @@ namespace XiaoFeng.Onvif
             udp.Close();
             udp.Dispose();
             return list;
+        }
+
+        //获取本机的网段
+        public static string GetLocalIPGateway()
+        {
+            string[] arrary = GetLocalIp().Split('.');
+            return arrary[2];
+        }
+        //获取本机ip
+        public static string GetLocalIp()
+        {
+            ///获取本地的IP地址
+            string AddressIP = string.Empty;
+            foreach (IPAddress _IPAddress in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
+            {
+
+                //Debug.Log(_IPAddress.AddressFamily.ToString());
+                //Debug.Log(_IPAddress.ToString());
+                if (_IPAddress.AddressFamily.ToString() == "InterNetwork")
+                {
+                    AddressIP = _IPAddress.ToString();
+                    return AddressIP;
+                }
+            }
+            return AddressIP;
         }
 
         /// <summary>
