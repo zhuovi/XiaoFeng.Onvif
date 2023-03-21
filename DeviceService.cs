@@ -20,6 +20,8 @@ namespace XiaoFeng.Onvif
         /// <summary>
         /// 设备发现-基于当前网卡的网段局域网扫描
         /// </summary>
+        /// <param name="timeoutSecond">超时时长 单位为毫秒</param>
+        /// <param name="netMask">网段</param>
         /// <returns></returns>
         public static async Task<List<DiscoveryOnvifInfo>> DiscoveryOnvif(int timeoutSecond, string netMask = "255.255.255.255")
         {
