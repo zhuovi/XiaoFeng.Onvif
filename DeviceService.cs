@@ -40,9 +40,12 @@ namespace XiaoFeng.Onvif
                     Name = info.GetMatch(@"onvif://www.onvif.org/name/(?<a>[^\s]+)").UrlDecode(),
                     UUID = info.GetMatch(@"wsa:Address>(?<a>[^<]+)").Split(':').LastOrDefault(),
                     Hardware = info.GetMatch(@"onvif://www.onvif.org/hardware/(?<a>[^\s]+)").UrlDecode(),
-                    Ip = host,
-                    Port = port,
-                    Types = info.GetMatch(@"Types>(?<a>[^<]+)").Split(':').LastOrDefault()
+                    Ipv4Address = ipv4,
+                    Ipv6Address = ipv6,
+                    ServiceAddress = ipAddrs,
+                    Remote = item.RemoteEndPoint.Address.ToString(),
+                    Port = item.RemoteEndPoint.Port,
+                    Types = info.GetMatch(@"Types>(?<a>[^<]+)")
                 });
             }
             #endregion
