@@ -21,6 +21,11 @@ namespace XiaoFeng.Onvif
         public string UUID { get; set; }
 
         /// <summary>
+        /// onvif地址
+        /// </summary>
+        public string ServiceAddress { get; set; }
+
+        /// <summary>
         /// Hardware
         /// </summary>
         public string Hardware { get; set; }
