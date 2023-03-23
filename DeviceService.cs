@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using System.Xml.Linq;
 using XiaoFeng.Xml;
 using XiaoFeng;
-using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System;
+using System.Linq;
 
 namespace XiaoFeng.Onvif
 {
@@ -15,7 +14,7 @@ namespace XiaoFeng.Onvif
     /// </summary>
     public class DeviceService
     {
-        public static readonly string URL = "onvif/device_service";
+        public static readonly string URL = "deviceInformation/device_service";
 
         /// <summary>
         /// 设备发现-基于当前网卡的网段局域网扫描
@@ -37,15 +36,13 @@ namespace XiaoFeng.Onvif
                 var host = uri.Host;
                 data.Add(new DiscoveryOnvifInfo
                 {
-                    Name = info.GetMatch(@"onvif://www.onvif.org/name/(?<a>[^\s]+)").UrlDecode(),
+                    Name = info.GetMatch(@"deviceInformation://www.deviceInformation.org/name/(?<a>[^\s]+)").UrlDecode(),
                     UUID = info.GetMatch(@"wsa:Address>(?<a>[^<]+)").Split(':').LastOrDefault(),
-                    Hardware = info.GetMatch(@"onvif://www.onvif.org/hardware/(?<a>[^\s]+)").UrlDecode(),
-                    Ipv4Address = ipv4,
-                    Ipv6Address = ipv6,
+                    Hardware = info.GetMatch(@"deviceInformation://www.deviceInformation.org/hardware/(?<a>[^\s]+)").UrlDecode(),
                     ServiceAddress = ipAddrs,
-                    Remote = item.RemoteEndPoint.Address.ToString(),
-                    Port = item.RemoteEndPoint.Port,
-                    Types = info.GetMatch(@"Types>(?<a>[^<]+)")
+                    Ip = host,
+                    Port = port,
+                    Types = info.GetMatch(@"Types>(?<a>[^<]+)").Split(':').LastOrDefault()
                 });
             }
             #endregion
@@ -107,8 +104,9 @@ namespace XiaoFeng.Onvif
         /// 获取设备信息
         /// </summary>
         /// <returns></returns>
-        public static async Task<string> GetDeviceInformation(IPEndPoint iPEndPoint, string user, string pass, DateTime onvifUTCDateTime)
+        public static async Task<OnvifResult<DeviceInformation>> GetDeviceInformation(IPEndPoint iPEndPoint, string user, string pass, DateTime onvifUTCDateTime)
         {
+            OnvifResult<DeviceInformation> deviceInformation = new OnvifResult<DeviceInformation>();
             string reqMessageStr = @" 
                                       <tds:GetDeviceInformation /> ";
             var result = await OnvifAuth.RemoteClient(iPEndPoint, URL, reqMessageStr, user, pass, onvifUTCDateTime);
@@ -117,17 +115,23 @@ namespace XiaoFeng.Onvif
             {
                 try
                 {
-                    return XElement.Parse(xnode).Descendants("GetDeviceInformationResponse").FirstOrDefault().ToXml().XmlToEntity<XmlValue>().ChildNodes.ToDictionary(x => x.Name, x => x.Value).ToJson();
+                    var data = XElement.Parse(xnode).Descendants("GetDeviceInformationResponse").FirstOrDefault().ToXml()
+                        .XmlToEntity<XmlValue>().ChildNodes.ToDictionary(x => x.Name, x => x.Value).ToJson();
+                    var entity = JSONConvert.Deserialize<DeviceInformation>(data);
+
+                    deviceInformation.Success = true;
+                    deviceInformation.Result = entity;
                 }
                 catch (Exception ex)
                 {
-                    return ex.ToString();
+                    deviceInformation.ErrMsg = ex.ToString();
                 }
             }
             else
             {
-                return OnvifAuth.ErrorResponse(xnode).ToCast<string>();
+                deviceInformation.ErrMsg = OnvifAuth.ErrorResponse(xnode).ToCast<string>();
             }
+            return deviceInformation;
         }
     }
 
