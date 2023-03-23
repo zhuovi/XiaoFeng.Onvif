@@ -44,12 +44,15 @@ namespace XiaoFeng.Onvif
         /// <returns></returns>
         public static string GetPasswordDigest(string nonce, string createdString, string password)
         {
-            return new Cryptography.SHAEncryption()
-                .Encrypt(new List<byte[]> {
+            var data = new List<byte[]> {
                     nonce.FromBase64StringToBytes(),
-                    createdString.GetBytes(),
-                    password.GetBytes() }
-                .SelectMany(a => a).ToArray(), Cryptography.SHAType.SHA1).ToBase64String();
+                    createdString.GetBytes()
+                  };
+            var passByte = password.GetBytes();
+            if (passByte != null) data.Add(passByte);
+
+            return new XiaoFeng.Cryptography.SHAEncryption()
+                .Encrypt(data.SelectMany(a => a).ToArray(), XiaoFeng.Cryptography.SHAType.SHA1).ToBase64String();
         }
 
         /// <summary>
