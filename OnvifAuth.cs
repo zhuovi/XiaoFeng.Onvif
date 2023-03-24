@@ -23,7 +23,6 @@ namespace XiaoFeng.Onvif
         public static async Task<HttpResponse> RemoteClient(IPEndPoint iPEndPoint, string url, string reqMessageStr,
             string user, string pass, DateTime onvifUTCDateTime)
         {
-
             var headToken = GetHeadToken(user, pass, onvifUTCDateTime);
             return await HttpHelper.GetHtmlAsync(new HttpRequest
             {
@@ -44,15 +43,12 @@ namespace XiaoFeng.Onvif
         /// <returns></returns>
         public static string GetPasswordDigest(string nonce, string createdString, string password)
         {
-            var data = new List<byte[]> {
-                    nonce.FromBase64StringToBytes(),
-                    createdString.GetBytes()
-                  };
+            var data = nonce.FromBase64StringToBytes().Concat(createdString.GetBytes());
             var passByte = password.GetBytes();
-            if (passByte != null) data.Add(passByte);
+            if (passByte != null) data.Concat(passByte);
 
             return new XiaoFeng.Cryptography.SHAEncryption()
-                .Encrypt(data.SelectMany(a => a).ToArray(), XiaoFeng.Cryptography.SHAType.SHA1).ToBase64String();
+                .Encrypt(data.ToArray(), XiaoFeng.Cryptography.SHAType.SHA1).ToBase64String();
         }
 
         /// <summary>
