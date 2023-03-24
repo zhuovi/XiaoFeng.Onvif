@@ -77,7 +77,7 @@ namespace XiaoFeng.Onvif
         public static string GetHeadToken(string username, string password, DateTime onvifUTCDateTime)
         {
             string nonce = GetNonce();
-            string created = onvifUTCDateTime.ToString("yyyy-MM-ddThh:mm:ssZ");
+            string created = onvifUTCDateTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
             //设置发送消息体
             return $@"
                               <s:Header xmlns:s=""http://www.w3.org/2003/05/soap-envelope"">
